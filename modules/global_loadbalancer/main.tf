@@ -8,9 +8,9 @@ locals {
 }
 
 resource "digitalocean_loadbalancer" "this" {
-  name                       = try(local.final_config.name, "${var.name_prefix}-glb")
-  type                       = try(local.final_config.type, "GLOBAL")
-  target_load_balancer_ids  = local.final_config.target_load_balancer_ids
+  name                     = try(local.final_config.name, "${var.name_prefix}-glb")
+  type                     = try(local.final_config.type, "GLOBAL")
+  target_load_balancer_ids = local.final_config.target_load_balancer_ids
 
   dynamic "glb_settings" {
     for_each = try(local.final_config.glb_settings != null ? [local.final_config.glb_settings] : [], [])
@@ -33,8 +33,8 @@ resource "digitalocean_loadbalancer" "this" {
     for_each = try(local.final_config.domains, [])
 
     content {
-      name           = domains.value.name
-      is_managed     = try(domains.value.is_managed, null)
+      name       = domains.value.name
+      is_managed = try(domains.value.is_managed, null)
     }
   }
 

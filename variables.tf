@@ -17,8 +17,8 @@ variable "vpcs" {
 
 variable "region_dns_records" {
   description = "If set then a dns record for each region LB will be created"
-  type = bool
-  default = false
+  type        = bool
+  default     = false
 }
 
 variable "regional_lb_config" {
@@ -36,7 +36,7 @@ variable "regional_lb_config" {
 
 variable "global_lb_config" {
   description = "GLB config"
-  type = any
+  type        = any
   validation {
     condition = (
       !contains(keys(var.global_lb_config), "type") ||
@@ -45,7 +45,7 @@ variable "global_lb_config" {
     error_message = "If provided, common_config.type must be \"GLOBAL\"."
   }
   validation {
-    condition = !contains(keys(var.global_lb_config), "target_load_balancer_ids")
+    condition     = !contains(keys(var.global_lb_config), "target_load_balancer_ids")
     error_message = "The key 'target_load_balancer_ids' is not allowed in global_lb_config as it will be set dynamically."
   }
   validation {

@@ -8,26 +8,38 @@ import (
 	"testing"
 )
 
+func baseTerraformVars() map[string]interface{} {
+	return map[string]interface{}{
+		"name_prefix": "test",
+		"vpcs": []map[string]string{
+			{
+				"region":   "nyc3",
+				"vpc_uuid": "1234",
+			},
+		},
+		"regional_lb_config": map[string]interface{}{
+			"type": "REGIONAL",
+		},
+		"global_lb_config": map[string]interface{}{
+			"domains": []interface{}{
+				map[string]interface{}{
+					"name":       "test.do.com",
+					"is_managed": true,
+				},
+			},
+			"type": "GLOBAL",
+		},
+	}
+}
+
 func TestErrorIfEmptyVpcConfig(t *testing.T) {
 	t.Parallel()
 	testDir := test_structure.CopyTerraformFolderToTemp(t, "..", ".")
+	tfVars := baseTerraformVars()
+	tfVars["vpcs"] = []map[string]string{}
 	terraformOptions := terraform.WithDefaultRetryableErrors(t, &terraform.Options{
 		TerraformDir: testDir,
-		Vars: map[string]interface{}{
-			"name_prefix": "test",
-			"vpcs":        []map[string]string{},
-			"regional_lb_config": map[string]interface{}{
-				"type": "REGIONAL",
-			},
-			"global_lb_config": map[string]interface{}{
-				"domains": []interface{}{
-					map[string]interface{}{
-						"name":       "test.do.com",
-						"is_managed": true,
-					},
-				},
-			},
-		},
+		Vars:         tfVars,
 		NoColor:      true,
 		PlanFilePath: "plan.out",
 	})
@@ -39,28 +51,11 @@ func TestErrorIfEmptyVpcConfig(t *testing.T) {
 func TestErrorIfRlbSetsTypeGlobal(t *testing.T) {
 	t.Parallel()
 	testDir := test_structure.CopyTerraformFolderToTemp(t, "..", ".")
+	tfVars := baseTerraformVars()
+	tfVars["regional_lb_config"].(map[string]interface{})["type"] = "GLOBAL"
 	terraformOptions := terraform.WithDefaultRetryableErrors(t, &terraform.Options{
 		TerraformDir: testDir,
-		Vars: map[string]interface{}{
-			"name_prefix": "test",
-			"vpcs": []map[string]string{
-				{
-					"region":   "nyc3",
-					"vpc_uuid": "1234",
-				},
-			},
-			"regional_lb_config": map[string]interface{}{
-				"type": "GLOBAL",
-			},
-			"global_lb_config": map[string]interface{}{
-				"domains": []interface{}{
-					map[string]interface{}{
-						"name":       "test.do.com",
-						"is_managed": true,
-					},
-				},
-			},
-		},
+		Vars:         tfVars,
 		NoColor:      true,
 		PlanFilePath: "plan.out",
 	})
@@ -72,29 +67,11 @@ func TestErrorIfRlbSetsTypeGlobal(t *testing.T) {
 func TestErrorIfGlbSetsTypeNotGlobal(t *testing.T) {
 	t.Parallel()
 	testDir := test_structure.CopyTerraformFolderToTemp(t, "..", ".")
+	tfVars := baseTerraformVars()
+	tfVars["global_lb_config"].(map[string]interface{})["type"] = "REGIONAL"
 	terraformOptions := terraform.WithDefaultRetryableErrors(t, &terraform.Options{
 		TerraformDir: testDir,
-		Vars: map[string]interface{}{
-			"name_prefix": "test",
-			"vpcs": []map[string]string{
-				{
-					"region":   "nyc3",
-					"vpc_uuid": "1234",
-				},
-			},
-			"regional_lb_config": map[string]interface{}{
-				"type": "REGIONAL",
-			},
-			"global_lb_config": map[string]interface{}{
-				"type": "REGIONAL",
-				"domains": []interface{}{
-					map[string]interface{}{
-						"name":       "test.do.com",
-						"is_managed": true,
-					},
-				},
-			},
-		},
+		Vars:         tfVars,
 		NoColor:      true,
 		PlanFilePath: "plan.out",
 	})
@@ -106,32 +83,20 @@ func TestErrorIfGlbSetsTypeNotGlobal(t *testing.T) {
 func TestErrorIfGlbSetsMoreThanOneDomain(t *testing.T) {
 	t.Parallel()
 	testDir := test_structure.CopyTerraformFolderToTemp(t, "..", ".")
+	tfVars := baseTerraformVars()
+	tfVars["global_lb_config"].(map[string]interface{})["domains"] = []interface{}{
+		map[string]interface{}{
+			"name":       "test.do.com",
+			"is_managed": true,
+		},
+		map[string]interface{}{
+			"name":       "test2.do.com",
+			"is_managed": true,
+		},
+	}
 	terraformOptions := terraform.WithDefaultRetryableErrors(t, &terraform.Options{
 		TerraformDir: testDir,
-		Vars: map[string]interface{}{
-			"name_prefix": "test",
-			"vpcs": []map[string]string{
-				{
-					"region":   "nyc3",
-					"vpc_uuid": "1234",
-				},
-			},
-			"regional_lb_config": map[string]interface{}{
-				"type": "REGIONAL",
-			},
-			"global_lb_config": map[string]interface{}{
-				"domains": []interface{}{
-					map[string]interface{}{
-						"name":       "test.do.com",
-						"is_managed": true,
-					},
-					map[string]interface{}{
-						"name":       "test2.do.com",
-						"is_managed": true,
-					},
-				},
-			},
-		},
+		Vars:         tfVars,
 		NoColor:      true,
 		PlanFilePath: "plan.out",
 	})

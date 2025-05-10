@@ -4,7 +4,7 @@ variable "domain" {
 
 variable "region_lbs" {
   type = list(object({
-    ip   = string
+    ip     = string
     region = string
   }))
 }
