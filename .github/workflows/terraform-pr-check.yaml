@@ -1,0 +1,47 @@
+name: Terraform PR Check
+
+on:
+  pull_request:
+    paths:
+      - '**/*.tf'
+
+jobs:
+  terraform-check:
+    name: Validate Terraform
+    runs-on: ubuntu-latest
+    container:
+      image: hashicorp/terraform:1.11
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Terraform Init
+        run: terraform init -backend=false
+
+      - name: Terraform Validate
+        run: terraform validate
+
+      - name: Terraform Format Check
+        run: terraform fmt -check -recursive
+
+  tflint:
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/terraform-linters/tflint
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Write TFLint config
+        run: |
+          cat <<EOF > .tflint.hcl
+          plugin "terraform" {
+            enabled = true
+            preset  = "all"
+          }
+          EOF
+
+      - name: Run TFLint
+        run: |
+          tflint --init
+          tflint
