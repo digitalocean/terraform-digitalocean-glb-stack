@@ -1,6 +1,6 @@
 module "regional_loadbalancer" {
   source   = "./modules/regional_loadbalancer"
-  for_each = { for vpc in var.vpcs : "${vpc.region}" => vpc }
+  for_each = { for vpc in var.vpcs : vpc.region => vpc }
 
   name      = "${var.name_prefix}-${each.value.region}"
   region    = each.value.region
