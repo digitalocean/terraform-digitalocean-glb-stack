@@ -9,6 +9,10 @@ variable "vpcs" {
     region   = string
     vpc_uuid = string
   }))
+  validation {
+    condition     = length(var.vpcs) > 0
+    error_message = "Please Specify at least one VPC configuration."
+  }
 }
 
 variable "region_dns_records" {
