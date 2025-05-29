@@ -72,3 +72,4 @@ jobs:
           else
             echo "No tests to run."
           fi
+
