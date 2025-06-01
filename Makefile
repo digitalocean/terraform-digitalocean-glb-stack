@@ -4,15 +4,15 @@ TEST_SCRIPT_DIR := $(realpath $(MAKEFILE_DIR)/test/scripts)
 
 .PHONY: tf-validate
 tf-validate:
-	@$(TEST_SCRIPT_DIR)/terraform-validate.sh
+	@bash $(TEST_SCRIPT_DIR)/terraform-validate.sh
 
 .PHONY: tflint
 tflint:
-	@$(TEST_SCRIPT_DIR)/tflint.sh
+	@bash $(TEST_SCRIPT_DIR)/tflint.sh
 
 .PHONY: lint
 lint: tf-validate tflint
 
 .PHONY: test-unit
 test-unit:
-	@cd test && $(TEST_SCRIPT_DIR)/terratest.sh
+	@cd test && bash $(TEST_SCRIPT_DIR)/terratest.sh
