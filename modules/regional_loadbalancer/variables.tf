@@ -1,15 +1,19 @@
 variable "name" {
-  type = string
+  description = "RLB Name"
+  type        = string
 }
 
 variable "region" {
-  type = string
+  description = "RLB Region"
+  type        = string
 }
 
 variable "vpc_uuid" {
-  type = string
+  description = "UUID of the VPC the RLB will attach to"
+  type        = string
 }
 
 variable "lb_config" {
-  type = any
+  description = "RLB config"
+  type        = any
 }
