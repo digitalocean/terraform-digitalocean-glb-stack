@@ -4,72 +4,33 @@ on:
   pull_request:
     paths:
       - '**/*.tf'
+      - 'test/**'
 
 jobs:
-  terraform-check:
-    name: Validate Terraform
+  lint:
+    name: Lint
     runs-on: ubuntu-latest
     container:
-      image: hashicorp/terraform:1.11
-
+      image: registry.digitalocean.com/scale-with-simplicity-test/terraform-test:latest
+      credentials:
+        username: solutions@digitalocean.com
+        password: ${{ secrets.TEST_DIGITALOCEAN_ACCESS_TOKEN }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-
-      - name: Terraform Init
-        run: terraform init -backend=false
-
-      - name: Terraform Validate
-        run: terraform validate
-
-      - name: Terraform Format Check
-        run: terraform fmt -check -recursive
-
-  tflint:
-    runs-on: ubuntu-latest
-    container:
-      image: ghcr.io/terraform-linters/tflint
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Write TFLint config
-        run: |
-          cat <<EOF > .tflint.hcl
-          plugin "terraform" {
-            enabled = true
-            preset  = "all"
-          }
-          EOF
-
-      - name: Run TFLint
-        run: |
-          tflint --init
-          tflint
+      - name: Run linting
+        run: make lint
 
   terratest:
+    name: Terratest Unit Tests
     runs-on: ubuntu-latest
-    needs: terraform-check
+    container:
+      image: registry.digitalocean.com/scale-with-simplicity-test/terraform-test:latest
+      credentials:
+        username: solutions@digitalocean.com
+        password: ${{ secrets.TEST_DIGITALOCEAN_ACCESS_TOKEN }}
     steps:
-      - uses: actions/checkout@v3
-
-      - name: Set up Go
-        uses: actions/setup-go@v5
-        with:
-          go-version: "1.24"
-
-      - name: Install Terraform
-        run: |
-          TF_VERSION="1.11.4"
-          apt-get update && sudo apt-get install -y wget unzip
-          wget https://releases.hashicorp.com/terraform/${TF_VERSION}/terraform_${TF_VERSION}_linux_amd64.zip
-          unzip terraform_${TF_VERSION}_linux_amd64.zip
-          mv terraform /usr/local/bin
-
-      - name: Run unit tests
-        run: |
-          if [ -d "test" ]; then
-            cd test && go test ./...
-          else
-            echo "No tests to run."
-          fi
-
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Unit Tests
+        run: make test-unit
