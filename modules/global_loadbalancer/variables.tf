@@ -4,9 +4,11 @@ variable "name_prefix" {
 }
 
 variable "target_load_balancer_ids" {
-  type = list(string)
+  description = "Ids of the RLB which the GLB will point to"
+  type        = list(string)
 }
 
 variable "glb_config" {
-  type = any
+  description = "GLB Config"
+  type        = any
 }
