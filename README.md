@@ -10,7 +10,7 @@ A Terraform module that deploys:
 
 ```terraform
 module "glb_stack" {
-  source  = "git@github.com:digitalocean/terraform-digitalocean-glb-stack.git"
+  source  = "github.com/digitalocean/terraform-digitalocean-glb-stack"
 
   name_prefix = "test"
 

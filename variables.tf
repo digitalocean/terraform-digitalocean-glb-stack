@@ -56,4 +56,3 @@ variable "global_lb_config" {
     error_message = "global_lb_config.domains must contain exactly one domain object."
   }
 }
-
