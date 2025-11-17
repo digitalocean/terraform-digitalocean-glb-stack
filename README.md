@@ -90,3 +90,7 @@ The example spins up three regional LBs (NYC3, SFO3, AMS3), builds a single GLB 
 | `region_dns_records` | Create an `A` record for each regional LB using the first domain in `global_lb_config.domains[*].name`.                                                                                         | `bool`                                                 | `false` |    no    |
 | `regional_lb_config` | Map of arguments passed to **every** regional load balancer (forwarding rules, health‑checks, tags, etc.). See [DO LB docs](https://docs.digitalocean.com/products/networking/load-balancers/). | `any`                                                  | n/a     |  **yes** |
 | `global_lb_config`   | Map of arguments for the GLB (domains, health‑check, GLB settings, etc.). Must include exactly **one** item in `domains`.                                                                       | `any`                                                  | n/a     |  **yes** |
+
+# Support
+
+This Terraform module is provided as a reference implementation and must be fully tested in your own environment before using it in production. The Terraform Provider and its resources are supported, but this module itself is not officially supported.
