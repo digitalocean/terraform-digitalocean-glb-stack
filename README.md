@@ -1,3 +1,14 @@
+> [!WARNING]
+> ## This repository is deprecated
+>
+> This module has been consolidated into the [scale-with-simplicity](https://github.com/digitalocean/scale-with-simplicity) repository.
+>
+> **New location:** [modules/glb-stack](https://github.com/digitalocean/scale-with-simplicity/tree/main/modules/glb-stack)
+>
+> This repository will be archived. Please update your module references to use the new location.
+
+---
+
 # terraform-digitalocean-glb-stack
 
 A Terraform module that deploys:
